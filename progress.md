@@ -1,0 +1,121 @@
+# Build Progress
+
+> Operational source of truth between agent sessions. Every agent must read this at session start and update it at session end. See `AGENTS.md` § "Orchestration Files" for the protocol.
+
+## Current Phase: **3 — About & Skills (next)**
+## Active sprint: Sprint 3 (not started)
+## Last updated: 2026-05-07 by Claude Code
+
+---
+
+## Phase status
+
+- [x] **Phase 0** — Doc cleanup & scaffolding *(Claude Code, 2026-05-07)*
+  - Patched DESIGN.md, CLAUDE.md, AGENTS.md per locked decisions D1–D8
+  - Created `progress.md`, `decisions-log.md`, `assets-checklist.md`, `plans/phase-{1..6}-*.md`, `handoffs/README.md`
+- [x] **Phase 1** — Foundation *(Claude Code, 2026-05-07)*
+  - Next.js 15 static export scaffold, Tailwind v4 CSS vars, Orbitron + JetBrains Mono
+  - CustomCursor, FBMBackground (placeholder shader), AudioController shell
+  - HUDFrame, GlowButton, StatusDot UI primitives
+  - GSAP registration (`src/lib/gsap.ts`), all 5 typed data stubs
+  - React 19 + R3F 8.x compat fixes (JSX bridge, ClientShell ssr:false wrapper)
+- [x] **Phase 2** — Loading & Hero *(Claude Code, 2026-05-07)*
+  - Integrated Codex: AtomLoader, HeroScene, FBM shaders, ParticleRunner
+  - Built: HeroText (SplitText char reveal, typewriter role, dividers, scroll indicator)
+  - Built: HeroHUD (live clock, SYS_STATUS, mute toggle)
+  - Wired page.tsx: AtomLoader → hero reveal → ParticleRunner → Phase 3 placeholder
+  - Spotify Embed preserved (D9): button gesture-locked, beat proxy drives HeroScene/FBM reactivity
+  - `npx tsc --noEmit` = 0 errors · `npm run build` = ✓ 105 kB first load
+- [ ] **Phase 3** — About & Skills *(3A done: AboutPanel + PhotoShader; 3B/SkillOrrery blocked on Codex)*
+- [ ] **Phase 4** — Projects (8 R3F scenes + horizontal-pin gallery)
+- [ ] **Phase 5** — Experience, Labs, Contact
+- [ ] **Phase 6** — Polish, performance, deploy
+
+---
+
+## Component checklist
+
+| Component | Phase | Owner | Status | Verification | Notes |
+|---|---|---|---|---|---|
+| Doc patches (DESIGN/CLAUDE/AGENTS) | 0 | Claude Code | ✅ done | git diff | D1–D8 reflected |
+| `progress.md` | 0 | Claude Code | ✅ done | exists | this file |
+| `decisions-log.md` | 0 | Claude Code | ✅ done | exists | seeded with D1–D8 |
+| `assets-checklist.md` | 0 | Claude Code | ✅ done | exists | user fills in keys |
+| `plans/phase-1-foundation.md` | 0 | Claude Code | ⏳ pending | exists | |
+| `plans/phase-2-loading-hero.md` | 0 | Claude Code | ⏳ pending | exists | |
+| `plans/phase-3-about-skills.md` | 0 | Claude Code | ⏳ pending | exists | |
+| `plans/phase-4-projects.md` | 0 | Claude Code | ⏳ pending | exists | |
+| `plans/phase-5-experience-labs-contact.md` | 0 | Claude Code | ⏳ pending | exists | |
+| `plans/phase-6-polish-deploy.md` | 0 | Claude Code | ⏳ pending | exists | |
+| `handoffs/README.md` | 0 | Claude Code | ⏳ pending | exists | template |
+| Next.js scaffold | 1 | Claude Code | ✅ done | `npm run build` clean | Node 25.9 via Homebrew |
+| `globals.css` (CSS vars) | 1 | Claude Code | ✅ done | all DESIGN §2/§3 tokens | Tailwind v4 `@theme` + plain `:root` |
+| `layout.tsx` (fonts, cursor, FBM) | 1 | Claude Code | ✅ done | static export succeeds | ClientShell for ssr:false |
+| `src/data/*.ts` stubs | 1 | Claude Code | ✅ done | tsc --noEmit clean | 5 files + types.ts |
+| `src/lib/gsap.ts` | 1 | Claude Code | ✅ done | imports work | ScrollTrigger + SplitText registered |
+| `CustomCursor.tsx` | 1 | Claude Code | ✅ done | client-only, ssr:false | hidden on touch |
+| `FBMBackground.tsx` (host) | 1 | Claude Code | ✅ done | placeholder shader | Phase 2 swaps in fbm.frag.glsl |
+| `HUDFrame.tsx`, `GlowButton.tsx` | 1 | Claude Code | ✅ done | typed, no errors | StatusDot also done |
+| `AtomLoader.tsx` | 2 | **Codex** | ✅ done | `/private/tmp/atom-loader-t1_5-1280x900.png`, `/private/tmp/atom-loader-t3_0-1280x900.png` | R3F geometry + GSAP timing |
+| `AudioController.tsx` + `useAudioAnalyzer` | 2 | Claude Code | ✅ done | mute persists in localStorage | Spotify Embed via D9; beat proxy for reactivity |
+| `SpotifyMusicButton.tsx` + `SpotifyEmbedController.tsx` | 2 | Claude Code | ✅ done | button toggles play/pause | D9 — bottom-right HUD button |
+| `fbm.frag.glsl` + `fbm.vert.glsl` | 2 | **Codex** | ✅ done | FBM scene snapshot | DESIGN §8.1 |
+| `distortion.frag.glsl` | 2 | **Codex** | 🔲 | hover snapshot | DESIGN §8.2 |
+| `scanline.frag.glsl` | 3 | **Codex** | 🔲 | photo snapshot | DESIGN §8.3 |
+| `HeroScene.tsx` | 2 | **Codex** | ✅ done | `/private/tmp/hero-scene-1280x900.png`, `/private/tmp/hero-scene-repel-1280x900.png` | debug audio fallback tested; mouse repel works |
+| `HeroText.tsx` | 2 | Claude Code | ✅ done | SplitText name + typewriter + dividers + scroll indicator | Orbitron 900 |
+| `HeroHUD.tsx` | 2 | Claude Code | ✅ done | live HH:MM:SS, SYS_STATUS, mute toggle | HUDFrame + StatusDot |
+| `runnerPoses.ts` (data) | 2 | **Gemini** | ✅ done | `npx tsc --noEmit` | 5 keyframes × 2048 pts; unchanged by Codex |
+| `ParticleRunner.tsx` | 2 | **Codex** | ✅ done | `handoffs/particle-runner-start.png`, `handoffs/particle-runner-mid.png`, `handoffs/particle-runner-exit-scatter.png`, `handoffs/particle-runner-mobile.png` | temporary page mount only for QA; restored |
+| `AboutPanel.tsx` | 3 | Claude Code | ✅ done | tsc clean, build clean | 40/60 grid, GSAP row type-in, PhotoShader integrated |
+| `PhotoShader.tsx` | 3 | **Codex** | ✅ done | scanline + cyan grade | screenshots in handoffs/ |
+| `SkillOrrery.tsx` | 3 | **Codex** | 🔲 | hover expands pod | **BLOCKED — Codex session ran out; placeholder in page.tsx** |
+| `ProjectGallery.tsx` | 4 | Claude Code | 🔲 | horizontal pin desktop, vertical mobile | IntersectionObserver gating |
+| `ProjectCard.tsx` | 4 | Claude Code | 🔲 | template renders | |
+| `CDASScene.tsx` + poster | 4 | **Codex** | 🔲 | scene + 1200×900 PNG | + Mexico GeoJSON from Gemini |
+| `FaultmapScene.tsx` + poster | 4 | **Codex** | 🔲 | | |
+| `PharmacyScene.tsx` + poster | 4 | **Codex** | 🔲 | | reuses Mexico GeoJSON |
+| `PipelineScene.tsx` + poster | 4 | **Codex** | 🔲 | | |
+| `InsuLinkScene.tsx` + poster | 4 | **Codex** | 🔲 | | + graph layout from Gemini |
+| `GeneticScene.tsx` + poster | 4 | **Codex** | 🔲 | | |
+| `WordleScene.tsx` + poster | 4 | **Codex** | 🔲 | | + tree topology from Gemini |
+| `OptionsScene.tsx` + poster | 4 | **Codex** | 🔲 | | |
+| `MissionLog.tsx` | 5 | Claude Code | 🔲 | timeline animates | |
+| `useGitHubStats.ts` | 5 | Claude Code | 🔲 | live data renders | handle: `gabonavarroo` |
+| `useWeather.ts` | 5 | Claude Code | 🔲 | Mexico City temp renders | |
+| `SystemMonitor.tsx` | 5 | Claude Code | 🔲 | all widgets live | |
+| `TechStack3D.tsx` | 5 | **Codex** | 🔲 | spinning logos | low-poly |
+| `TransmissionPanel.tsx` | 5 | Claude Code | 🔲 | test email arrives | EmailJS |
+| ScrollTrigger entrances (every section) | 6 | Claude Code | 🔲 | playwright pass | |
+| Mobile fallbacks | 6 | Claude Code | 🔲 | 375px screenshot clean | |
+| Low Power Mode toggle | 6 | Claude Code | 🔲 | flips localStorage flag | disables R3F |
+| `.github/workflows/deploy.yml` | 6 | Claude Code | 🔲 | live URL responds | actions/deploy-pages@v4 |
+
+---
+
+## Open blockers
+
+- **SkillOrrery.tsx** — Codex session ran out before delivering the R3F orbital scene. `plans/phase-3-about-skills.md` Sprint 3C describes the full spec. Temporary placeholder in `page.tsx` (data-section="skills") must be replaced when Codex delivers `src/components/skills/SkillOrrery.tsx`. The math helpers (`ORBIT_RADII`, `ORBIT_INCLINATIONS`, `getPodPosition`) are already present in `src/components/skills/SkillOrrery.tsx` from a prior Gemini handoff.
+
+---
+
+## Recent handoffs
+
+*None yet. New entries go at top with date stamp.*
+
+---
+
+## Session log (append-only, newest first)
+
+- **2026-05-07 — Claude Code (Sonnet 4.6).** Phase 3A complete. Built `src/components/about/AboutPanel.tsx`: 40/60 CSS Grid layout (single-column on mobile via `.about-grid`), dynamic `PhotoShader` integration (Codex-delivered, `scanline.frag/vert.glsl`), `HUDCornerBrackets` SVG draw-in animation, `StatusDot` "STATUS: ACTIVE", `HUDFrame` dossier panel with 5 `DataRow` entries (`OPERATIVE`, `INSTITUTION`, `BASE`, `CLEARANCE`, `LANGUAGES`), GSAP timeline (ScrollTrigger `top 75%`): SplitText char stagger per row (0.03s/char, 0.3s row gap), bio `fromTo` fade-in last. Added `.about-grid` + `.skills-pending` CSS to `globals.css`. Wired `AboutPanel` into `page.tsx` after `ParticleRunner`; added temporary skills placeholder (`data-section="skills"`, `SKILL MATRIX PENDING CODEX VISUAL MODULE`). Verified `OPERATOR.bio` present in `operator.ts` and `bio: string` in `types.ts`. `npx tsc --noEmit` = 0 errors. `npm run build` = ✓ 154 kB first-load. **Remaining blocker:** SkillOrrery.tsx from Codex (math helpers already in `src/components/skills/SkillOrrery.tsx`).
+
+- **2026-05-07 — Claude Code (Sonnet 4.6).** QA fix: ParticleRunner bleed-through. Root cause: three compounding bugs. (1) ParticleRunner section background was `rgba(5,8,15,0)` at the top — fully transparent — so HeroScene (position:fixed, z:1) showed through; user saw HeroScene's cursor-repel cloud, not the runner. (2) StaticRunnerFallback also had semi-transparent gradient. (3) `useMotionFallback` started as `true` causing canvas→fallback flash. Fixes: changed both section backgrounds to `var(--bg-void)`; added lazy initialiser to `useMotionFallback`; added `IntersectionObserver` on the hero section in `page.tsx` to unmount HeroScene once it leaves the viewport. `runnerPoses.ts` verified intact (5 correct keyframes, proper side-view humanoid). ParticleRunner logic verified intact (THREE.Points, RUNNER_POSES interpolation, ScrollTrigger scrub). `npx tsc --noEmit` = 0 errors. `npm run build` = ✓ 105 kB. Handoff saved: `handoffs/2026-05-07-particle-runner-qa-fix.md`.
+
+- **2026-05-07 — Claude Code (Sonnet 4.6).** Phase 2 integration complete. Validated all Codex deliverables (AtomLoader, HeroScene, fbm.vert/frag.glsl, ParticleRunner) — `npx tsc --noEmit` = 0 errors before any changes. FBMBackground already carried the production FBM shader inline (identical to Codex's fbm.frag.glsl); no re-wire needed. Built `HeroText.tsx`: Orbitron 900 name + GSAP SplitText stagger (y:40→0, 0.04s/char, expo.out), `useTypewriter` hook drives JetBrains Mono role line, clip-path draw-in dividers, bouncing chevron scroll indicator. Built `HeroHUD.tsx`: HUDFrame wrapper, live HH:MM:SS/YYYY.MM.DD clock via setInterval, SYS_STATUS ONLINE + StatusDot, blinking cursor terminator, mute-toggle button (SVG speaker icon, aria-pressed). Wired `page.tsx`: AtomLoader (ssr:false, z-100) → `loaderDone` state → reveals HeroHUD + HeroText; HeroScene (ssr:false, fixed z-1) warms up behind loader; ParticleRunner (ssr:false) follows; Phase 3 placeholder section. Spotify architecture preserved: button gesture-locked, no auto-play, beat proxy feeds HeroScene bass/mid/high reactivity, fallback link on error. Added `.hero-chevron` bounce keyframe to globals.css. `npx tsc --noEmit` = 0 errors. `npm run build` = ✓ static export, first-load JS = 105 kB. Browser smoke-test deferred to user — no Playwright MCP in this session. **Next:** Phase 3 (AboutPanel.tsx, PhotoShader.tsx, SkillOrrery.tsx).
+
+- **2026-05-07 — Codex.** Built `src/components/transitions/ParticleRunner.tsx` using Gemini's `RUNNER_POSES` without mutating the data file. Implementation: R3F `THREE.Points` BufferGeometry, normalized minimum shared pose length, five-pose stride interpolation, GSAP ScrollTrigger pin/scrub progress ref, left-to-right runner travel, scatter/fade after 95% progress, reduced-motion/mobile static HUD fallback, and explicit geometry/material disposal. Verification used a temporary `page.tsx` mount that was restored afterward. Screenshots saved: `handoffs/particle-runner-start.png`, `handoffs/particle-runner-mid.png`, `handoffs/particle-runner-exit-scatter.png`, `handoffs/particle-runner-mobile.png`. Browser console: no app errors; dev-only React DevTools/Fast Refresh messages observed.
+- **2026-05-07 — Codex.** Phase 2 visual QA repair: fixed invisible/missing HeroText by giving the DOM text layer an explicit z-index above the fixed HeroScene canvas, adding a guarded SplitText fallback path, and rendering the name as two visual lines (`GABRIEL` / `NAVARRO`). Verification: `handoffs/phase-2-hero-text-fixed.png` shows name, role typewriter, divider lines, HeroHUD, and scroll indicator over the particle cloud. `handoffs/phase-2-particle-runner-mid-qa.png` confirms ParticleRunner renders, but it still reads as a front-facing humanoid/runner silhouette rather than the intended side-view sprint; repair should stay in Phase 2 before Phase 3.
+- **2026-05-07 — Codex.** Built `src/components/hero/HeroScene.tsx`: fullscreen R3F Canvas, FBM shader background plane, 3,000-point BufferGeometry cloud, cyan soft-falloff ShaderMaterial, raycaster plane mouse repel, audio/debug bass-mid-high reactivity, and explicit disposal for custom geometry/materials. Verification: temporary home-page mount with debug audio, `npm run build` clean, screenshots saved at `/private/tmp/hero-scene-1280x900.png` and `/private/tmp/hero-scene-repel-1280x900.png`; second capture shows cursor repulsion cavity. Browser console: no errors or warnings.
+- **2026-05-07 — Claude Code (Opus 4.6 Thinking).** Spotify Embed integration (D9). Superseded D4 (royalty-free local MP3). Created: `src/types/spotify-iframe.d.ts` (Spotify iFrame API types), `src/data/audio.ts` (track URI + constants), `src/lib/audio-beat-proxy.ts` (deterministic synthetic beat proxy at 116 BPM), `src/components/audio/SpotifyEmbedController.tsx` (iFrame API lifecycle), `src/components/audio/SpotifyMusicButton.tsx` (HUD-styled bottom-right launcher). Refactored `AudioController.tsx` to add `spotifyPlaying` state and delegate `getAnalyzerData()` to beat proxy. Updated `ClientShell.tsx`, `globals.css`. Updated `decisions-log.md` (D9), `assets-checklist.md`, this file, and `plans/phase-2-loading-hero.md`. `npx tsc --noEmit` = 0 errors. `npm run build` = ✓ static export. **Next:** continue Phase 2 (AtomLoader, HeroScene, HeroText, HeroHUD, ParticleRunner).
+- **2026-05-07 — Claude Code (Sonnet 4.6).** Phase 1 complete. Installed Node 25.9 via Homebrew. Scaffolded Next.js 15 project with static export, Tailwind v4 CSS-first `@theme`, Orbitron + JetBrains Mono via `next/font`. Created all UI primitives (CustomCursor, FBMBackground placeholder, HUDFrame, GlowButton, StatusDot), AudioController shell, GSAP registration, and 5 typed data stubs (operator, projects, experience, skills, research). Solved React 19 / R3F 8.x incompatibility via `src/types/globals.d.ts` JSX bridge (`declare module 'react' { namespace JSX { interface IntrinsicElements extends ThreeElements {} } }`) and `ClientShell.tsx` ssr:false wrapper. `npx tsc --noEmit` = 0 errors. `npm run build` = ✓ static export, first-load JS = 103 KB. **Next:** Phase 2 (AtomLoader, AudioController, HeroScene, HeroText, HeroHUD, ParticleRunner). Requires `public/audio/main-theme.mp3` (see assets-checklist).
+- **2026-05-07 — Claude Code (Opus 4.7).** Phase 0 complete. Patched all three spec docs to reflect locked decisions D1–D8 (font=Orbitron, handle=gabonavarroo, basePath='', royalty-free music, horizontal-pin gallery, Tailwind v4, IntersectionObserver R3F mounting, GSAP plugins free). Created orchestration scaffolding: this file, `decisions-log.md`, `assets-checklist.md`, six per-phase sub-plans under `plans/`, and `handoffs/README.md` template. Replaced placeholder `README.md`. Did **not** delete `index.html` — pending user confirmation. **Next:** user reviews scaffolding; on approval, kick off Phase 1 (Next.js scaffold).

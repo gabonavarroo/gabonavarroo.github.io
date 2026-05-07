@@ -1,0 +1,298 @@
+@import "tailwindcss";
+
+@theme {
+  /* ── Base palette ───────────────────────────── */
+  --color-bg-void: #05080F;
+  --color-bg-base: #080C14;
+  --color-bg-surface: #0D1520;
+  --color-bg-raised: #111B2C;
+  --color-bg-overlay: #162035;
+  --color-border-dim: #1A2840;
+  --color-border-med: #1E3050;
+  --color-border-bright: #264060;
+
+  /* ── Cyan HUD accents ───────────────────────── */
+  --color-cyan-pure: #00D4FF;
+  --color-cyan-dim: #007A99;
+  --color-cyan-ghost: #00D4FF18;
+  --color-cyan-glow: #00D4FF40;
+  --color-blue-deep: #0066CC;
+  --color-blue-electric: #2288FF;
+
+  /* ── Status & data ──────────────────────────── */
+  --color-alert-amber: #FF8C00;
+  --color-alert-red: #FF3333;
+  --color-system-green: #00FF88;
+  --color-data-gold: #FFCC44;
+  --color-bio-teal: #00CCAA;
+  --color-geo-orange: #FF6B35;
+
+  /* ── Typography ─────────────────────────────── */
+  --color-text-primary: #E2E8F0;
+  --color-text-secondary: #8BA3C0;
+  --color-text-muted: #4A6080;
+  --color-text-accent: #00D4FF;
+  --color-text-code: #A8D4FF;
+
+  /* ── Fonts (resolved from next/font CSS vars) ── */
+  --font-orbitron: var(--font-orbitron-loaded), sans-serif;
+  --font-mono: var(--font-mono-loaded), 'Fira Code', monospace;
+  --font-system: system-ui, -apple-system, sans-serif;
+
+  /* ── Easing ──────────────────────────────────── */
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-circ: cubic-bezier(0, 0.55, 0.45, 1);
+  --ease-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* ── Duration ────────────────────────────────── */
+  --duration-instant: 80ms;
+  --duration-fast: 180ms;
+  --duration-normal: 400ms;
+  --duration-slow: 800ms;
+  --duration-cinematic: 1200ms;
+  --duration-epic: 3000ms;
+
+  /* ── Breakpoints ─────────────────────────────── */
+  --breakpoint-mobile: 375px;
+  --breakpoint-tablet: 768px;
+  --breakpoint-desktop: 1280px;
+  --breakpoint-wide: 1600px;
+}
+
+/* ── Plain CSS vars (for use outside Tailwind utilities) ── */
+:root {
+  --bg-void: #05080F;
+  --bg-base: #080C14;
+  --bg-surface: #0D1520;
+  --bg-raised: #111B2C;
+  --bg-overlay: #162035;
+  --border-dim: #1A2840;
+  --border-med: #1E3050;
+  --border-bright: #264060;
+
+  --cyan-pure: #00D4FF;
+  --cyan-dim: #007A99;
+  --cyan-ghost: #00D4FF18;
+  --cyan-glow: #00D4FF40;
+  --blue-deep: #0066CC;
+  --blue-electric: #2288FF;
+
+  --alert-amber: #FF8C00;
+  --alert-red: #FF3333;
+  --system-green: #00FF88;
+  --data-gold: #FFCC44;
+  --bio-teal: #00CCAA;
+  --geo-orange: #FF6B35;
+
+  --text-primary: #E2E8F0;
+  --text-secondary: #8BA3C0;
+  --text-muted: #4A6080;
+  --text-accent: #00D4FF;
+  --text-code: #A8D4FF;
+}
+
+/* ── Global reset & base ─────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  cursor: none;
+}
+
+@media (pointer: coarse) {
+  *,
+  *::before,
+  *::after {
+    cursor: auto;
+  }
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  background: var(--bg-base);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Typography utilities ────────────────────── */
+.font-variant-tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+.hud-label {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+/* ── HUD glow effects ────────────────────────── */
+.glow-standard {
+  box-shadow:
+    0 0 8px var(--cyan-glow),
+    0 0 24px var(--cyan-ghost),
+    0 0 48px #00D4FF0A;
+}
+
+.glow-active {
+  box-shadow:
+    0 0 4px var(--cyan-pure),
+    0 0 16px var(--cyan-glow),
+    0 0 40px var(--cyan-ghost);
+}
+
+.glow-ambient {
+  box-shadow: 0 0 20px var(--cyan-ghost);
+}
+
+/* ── Blinking cursor ─────────────────────────── */
+.cursor-blink::after {
+  content: '█';
+  animation: blink 1.1s step-end infinite;
+  color: var(--cyan-pure);
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* ── Status dot ──────────────────────────────── */
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--system-green);
+  box-shadow: 0 0 6px var(--system-green);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(0.85); }
+}
+
+/* ── Section layout ──────────────────────────── */
+[data-section] {
+  position: relative;
+}
+
+/* ── Spotify music button ────────────────────── */
+.spotify-btn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border: 1px solid var(--border-med);
+  border-top: 1px solid var(--cyan-dim);
+  background: var(--bg-surface);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  cursor: none;
+  text-decoration: none;
+  transition: box-shadow var(--duration-fast) var(--ease-expo),
+              border-color var(--duration-fast) var(--ease-expo),
+              color var(--duration-fast) var(--ease-expo);
+}
+
+.spotify-btn:hover {
+  box-shadow: 0 0 8px var(--cyan-glow), 0 0 24px var(--cyan-ghost);
+  border-color: var(--cyan-dim);
+  color: var(--text-primary);
+}
+
+.spotify-btn:focus-visible {
+  outline: 1px solid var(--cyan-pure);
+  outline-offset: 2px;
+}
+
+.spotify-btn[aria-pressed='true'] {
+  border-color: var(--cyan-dim);
+  color: var(--cyan-pure);
+}
+
+.spotify-btn__pulse {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--system-green);
+  box-shadow: 0 0 6px var(--system-green);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes spotify-spin {
+  to { transform: rotate(360deg); }
+}
+
+.spotify-btn__spinner {
+  width: 12px;
+  height: 12px;
+  border: 1.5px solid var(--border-med);
+  border-top-color: var(--cyan-pure);
+  border-radius: 50%;
+  animation: spotify-spin 0.8s linear infinite;
+}
+
+/* ── Hero scroll indicator chevron ──────────────── */
+.hero-chevron {
+  display: inline-block;
+  animation: chevron-bounce 1.8s ease-in-out infinite;
+}
+
+@keyframes chevron-bounce {
+  0%, 100% { transform: translateY(0); opacity: 0.4; }
+  50%       { transform: translateY(6px); opacity: 0.9; }
+}
+
+/* ── Photo scan-line animation ───────────────────── */
+@keyframes scanlines-scroll {
+  from { background-position: 0 0; }
+  to   { background-position: 0 80px; }
+}
+
+.photo-scanlines {
+  animation: scanlines-scroll 8s linear infinite;
+}
+
+/* ── About section grid ──────────────────────────── */
+.about-grid {
+  display: grid;
+  grid-template-columns: 40fr 60fr;
+  gap: 48px;
+  align-items: start;
+}
+
+@media (max-width: 768px) {
+  .about-grid {
+    grid-template-columns: 1fr !important;
+    gap: 32px !important;
+  }
+}
+
+/* ── Skills placeholder ──────────────────────────── */
+.skills-pending {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  min-height: 60vh;
+  background: var(--bg-void);
+  border-top: 1px solid var(--border-dim);
+  border-bottom: 1px solid var(--border-dim);
+}
+
