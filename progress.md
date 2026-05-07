@@ -2,8 +2,8 @@
 
 > Operational source of truth between agent sessions. Every agent must read this at session start and update it at session end. See `AGENTS.md` § "Orchestration Files" for the protocol.
 
-## Current Phase: **3 — About & Skills (next)**
-## Active sprint: Sprint 3 (not started)
+## Current Phase: **4 — Projects (next)**
+## Active sprint: Sprint 4 (not started)
 ## Last updated: 2026-05-07 by Claude Code
 
 ---
@@ -26,7 +26,12 @@
   - Wired page.tsx: AtomLoader → hero reveal → ParticleRunner → Phase 3 placeholder
   - Spotify Embed preserved (D9): button gesture-locked, beat proxy drives HeroScene/FBM reactivity
   - `npx tsc --noEmit` = 0 errors · `npm run build` = ✓ 105 kB first load
-- [ ] **Phase 3** — About & Skills *(3A done: AboutPanel + PhotoShader; 3B/SkillOrrery blocked on Codex)*
+- [x] **Phase 3** — About & Skills *(Claude Code, 2026-05-07)*
+  - AboutPanel: 40/60 grid, dossier rows with GSAP type-in stagger, corner brackets, StatusDot
+  - PhotoShader: CSS scan-line + cyan grade (no R3F canvas needed for photo)
+  - SkillOrrery: R3F Canvas, 4 inclined orbit rings (Gemini math), 5 skill pods (RoundedBox), Bloom postprocessing, hover expand + tech nodes, auto-rotate, OrbitControls, WebGLErrorBoundary + BloomBoundary isolation
+  - GitHub Actions deploy.yml created; public/.nojekyll added
+  - `npx tsc --noEmit` = 0 errors · `npm run build` = ✓ 155 kB first load
 - [ ] **Phase 4** — Projects (8 R3F scenes + horizontal-pin gallery)
 - [ ] **Phase 5** — Experience, Labs, Contact
 - [ ] **Phase 6** — Polish, performance, deploy

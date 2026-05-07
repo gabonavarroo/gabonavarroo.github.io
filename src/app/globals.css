@@ -282,17 +282,3 @@ body {
     gap: 32px !important;
   }
 }
-
-/* ── Skills placeholder ──────────────────────────── */
-.skills-pending {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  min-height: 60vh;
-  background: var(--bg-void);
-  border-top: 1px solid var(--border-dim);
-  border-bottom: 1px solid var(--border-dim);
-}
-

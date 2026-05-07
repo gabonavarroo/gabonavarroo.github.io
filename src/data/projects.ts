@@ -1,5 +1,18 @@
 import type { Project } from './types';
 
+export const PROJECT_MICROCOPY = {
+  cdas: 'Nation-scale missing-persons platform unifying 10K+ records across 40 fragmented sources.',
+  faultmap: 'PyPI-live LLM diagnostics engine for semantic failure slices, entropy scoring, and FDR-tested clusters.',
+  pharmacy: 'P-median pharmacy expansion optimizer scoring 200 sites for access, demand, and coverage gain.',
+  pipeline: 'Autonomous GCP scraping pipeline with Akamai bypass logic, fallback routes, and 24/7 price extraction.',
+  insulink: 'Diabetes care platform linking patients and doctors through monitored records, alerts, and care workflows.',
+  genetic: 'Genetic algorithm CO₂ estimator with adaptive mutation, curve fitting, and high-precision historical modeling.',
+  wordle: 'Tournament-winning Wordle engine using entropy search, vectorized pruning, and latency-bound decision trees.',
+  options: 'Live options-flow terminal with Kafka ingest, sharded MongoDB, PySpark analytics, and LightGBM volatility forecasts.',
+  crashes: 'Crash recidivism model over 8M records with 4NF data modeling, hotspot analysis, and risk features.',
+} as const;
+
+
 export const PROJECTS: Project[] = [
   {
     id: 'PROJECT_04.01',

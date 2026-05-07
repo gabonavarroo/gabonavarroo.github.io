@@ -30,6 +30,11 @@ const ParticleRunner = dynamic(
   { ssr: false }
 );
 
+const SkillOrrery = dynamic(
+  () => import('@/components/skills/SkillOrrery').then((m) => m.SkillOrrery),
+  { ssr: false }
+);
+
 export default function Home() {
   const [loaderDone, setLoaderDone] = useState(false);
   const [heroInView, setHeroInView] = useState(true);
@@ -83,22 +88,8 @@ export default function Home() {
       {/* ── ABOUT / DOSSIER ─────────────────────────────────── */}
       <AboutPanel />
 
-      {/* ── SKILLS PLACEHOLDER (awaiting Codex SkillOrrery) ── */}
-      {/* TODO: Replace <section> below with <SkillOrrery /> when Codex delivers it */}
-      <section data-section="skills" className="skills-pending">
-        <p
-          className="hud-label"
-          style={{ color: 'var(--cyan-dim)', letterSpacing: '0.2em' }}
-        >
-          SECTION_03.SKILLS
-        </p>
-        <p
-          className="hud-label"
-          style={{ color: 'var(--text-muted)', letterSpacing: '0.2em' }}
-        >
-          SKILL MATRIX PENDING CODEX VISUAL MODULE
-        </p>
-      </section>
+      {/* ── SKILLS / ORBITAL INTERFACE ──────────────────────── */}
+      <SkillOrrery />
     </main>
   );
 }

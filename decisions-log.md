@@ -123,3 +123,12 @@
 - **Alternatives considered:** <briefly>
 - **Consequences:** <what changes downstream>
 ```
+
+
+D11 — Project gallery expanded from 8 to 9 cards
+
+Decision:
+Add Chicago Crash Recidivism as PROJECT_04.09. ProjectGallery must derive all sizing, scroll distance, scene registry, and poster checks from PROJECTS.length instead of hardcoding 8.
+
+Consequences:
+Add CrashesScene.tsx, /public/posters/crashes.png, and optional src/data/crashesGraph.ts.
