@@ -35,6 +35,11 @@ const SkillOrrery = dynamic(
   { ssr: false }
 );
 
+const ProjectGallery = dynamic(
+  () => import('@/components/projects/ProjectGallery').then((m) => m.ProjectGallery),
+  { ssr: false }
+);
+
 export default function Home() {
   const [loaderDone, setLoaderDone] = useState(false);
   const [heroInView, setHeroInView] = useState(true);
@@ -90,6 +95,9 @@ export default function Home() {
 
       {/* ── SKILLS / ORBITAL INTERFACE ──────────────────────── */}
       <SkillOrrery />
+
+      {/* ── PROJECTS / MISSION ARCHIVE ──────────────────────── */}
+      <ProjectGallery />
     </main>
   );
 }

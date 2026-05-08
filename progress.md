@@ -32,7 +32,7 @@
   - SkillOrrery: R3F Canvas, 4 inclined orbit rings (Gemini math), 5 skill pods (RoundedBox), Bloom postprocessing, hover expand + tech nodes, auto-rotate, OrbitControls, WebGLErrorBoundary + BloomBoundary isolation
   - GitHub Actions deploy.yml created; public/.nojekyll added
   - `npx tsc --noEmit` = 0 errors · `npm run build` = ✓ 155 kB first load
-- [ ] **Phase 4** — Projects (8 R3F scenes + horizontal-pin gallery)
+- [ ] **Phase 4** — Projects (9 R3F scenes + horizontal-pin gallery)
 - [ ] **Phase 5** — Experience, Labs, Contact
 - [ ] **Phase 6** — Polish, performance, deploy
 
@@ -75,16 +75,19 @@
 | `AboutPanel.tsx` | 3 | Claude Code | ✅ done | tsc clean, build clean | 40/60 grid, GSAP row type-in, PhotoShader integrated |
 | `PhotoShader.tsx` | 3 | **Codex** | ✅ done | scanline + cyan grade | screenshots in handoffs/ |
 | `SkillOrrery.tsx` | 3 | **Codex** | 🔲 | hover expands pod | **BLOCKED — Codex session ran out; placeholder in page.tsx** |
-| `ProjectGallery.tsx` | 4 | Claude Code | 🔲 | horizontal pin desktop, vertical mobile | IntersectionObserver gating |
-| `ProjectCard.tsx` | 4 | Claude Code | 🔲 | template renders | |
-| `CDASScene.tsx` + poster | 4 | **Codex** | 🔲 | scene + 1200×900 PNG | + Mexico GeoJSON from Gemini |
-| `FaultmapScene.tsx` + poster | 4 | **Codex** | 🔲 | | |
-| `PharmacyScene.tsx` + poster | 4 | **Codex** | 🔲 | | reuses Mexico GeoJSON |
-| `PipelineScene.tsx` + poster | 4 | **Codex** | 🔲 | | |
+| `ProjectGallery.tsx` | 4 | Claude Code | ✅ done | horizontal pin desktop, vertical mobile | 9 cards via PROJECTS.length |
+| `ProjectCard.tsx` | 4 | Claude Code | ✅ done | IntersectionObserver gating, poster fallback | OPEN DOSSIER + GH actions |
+| `SceneSkeleton.tsx` | 4 | Claude Code | ✅ done | Suspense spinner | |
+| `ProjectDossierOverlay.tsx` | 4 | Claude Code | ✅ done | slide-in portal, ESC close | GSAP expo.out |
+| `CDASScene.tsx` + poster | 4 | **Codex** | ✅ done | R3F Mexico map + hotspots | stub replaced by hook delivery |
+| `FaultmapScene.tsx` + poster | 4 | **Codex** | 🔲 | scene + 1200×900 PNG | stub in place |
+| `PharmacyScene.tsx` + poster | 4 | **Codex** | ✅ done | R3F P-median solver viz | hook delivery; reuses Mexico GeoJSON |
+| `PipelineScene.tsx` + poster | 4 | **Codex** | 🔲 | | stub in place |
 | `InsuLinkScene.tsx` + poster | 4 | **Codex** | 🔲 | | + graph layout from Gemini |
-| `GeneticScene.tsx` + poster | 4 | **Codex** | 🔲 | | |
+| `GeneticScene.tsx` + poster | 4 | **Codex** | 🔲 | | stub in place |
 | `WordleScene.tsx` + poster | 4 | **Codex** | 🔲 | | + tree topology from Gemini |
-| `OptionsScene.tsx` + poster | 4 | **Codex** | 🔲 | | |
+| `OptionsScene.tsx` + poster | 4 | **Codex** | 🔲 | | stub in place |
+| `CrashesScene.tsx` + poster | 4 | **Codex** | 🔲 | scene + 1200×900 PNG | D11 — 9th project; stub in place |
 | `MissionLog.tsx` | 5 | Claude Code | 🔲 | timeline animates | |
 | `useGitHubStats.ts` | 5 | Claude Code | 🔲 | live data renders | handle: `gabonavarroo` |
 | `useWeather.ts` | 5 | Claude Code | 🔲 | Mexico City temp renders | |
@@ -111,6 +114,9 @@
 ---
 
 ## Session log (append-only, newest first)
+
+- **2026-05-07 — Claude Code (Sonnet 4.6).** Phase 4A complete. Added PROJECT_04.09 (Chicago Crash Recidivism) to `src/data/projects.ts` per D11. Created gallery architecture: `ProjectGallery.tsx` (GSAP ScrollTrigger horizontal pin desktop / vertical stack mobile, width derived from `PROJECTS.length`), `ProjectCard.tsx` (IntersectionObserver-gated scene mount, poster fallback with onError → SceneSkeleton, OPEN DOSSIER primary action, GH/live secondary actions), `SceneSkeleton.tsx` (spinner fallback for Suspense), `ProjectDossierOverlay.tsx` (portal to document.body, GSAP expo.out slide-in, ESC handler, full project meta). Created scene registry at `src/components/projects/scenes/sceneRegistry.ts` (9 entries via `React.lazy`). Created stubs for all 9 scenes (CDASScene, FaultmapScene, PharmacyScene, PipelineScene, InsuLinkScene, GeneticScene, WordleScene, OptionsScene, CrashesScene). Note: CDASScene and PharmacyScene were immediately replaced by hook-delivered Codex R3F implementations (Mexico map + hotspots; P-median solver). Added gallery/card/dossier CSS to `globals.css`. Created `src/lib/useIsMobile.ts`. Wired `ProjectGallery` into `page.tsx` as `ssr:false` dynamic import after SkillOrrery. Updated `decisions-log.md` (D11 formalized), `progress.md`, `plans/phase-4-projects.md` (8→9 throughout). `npx tsc --noEmit` = 0 errors. `npm run build` = ✓ 155 kB first-load. **Next Codex batches needed:** FaultmapScene, PipelineScene, InsuLinkScene, GeneticScene, WordleScene, OptionsScene, CrashesScene + all 9 poster PNGs to `public/posters/`.
+
 
 - **2026-05-07 — Claude Code (Sonnet 4.6).** Phase 3A complete. Built `src/components/about/AboutPanel.tsx`: 40/60 CSS Grid layout (single-column on mobile via `.about-grid`), dynamic `PhotoShader` integration (Codex-delivered, `scanline.frag/vert.glsl`), `HUDCornerBrackets` SVG draw-in animation, `StatusDot` "STATUS: ACTIVE", `HUDFrame` dossier panel with 5 `DataRow` entries (`OPERATIVE`, `INSTITUTION`, `BASE`, `CLEARANCE`, `LANGUAGES`), GSAP timeline (ScrollTrigger `top 75%`): SplitText char stagger per row (0.03s/char, 0.3s row gap), bio `fromTo` fade-in last. Added `.about-grid` + `.skills-pending` CSS to `globals.css`. Wired `AboutPanel` into `page.tsx` after `ParticleRunner`; added temporary skills placeholder (`data-section="skills"`, `SKILL MATRIX PENDING CODEX VISUAL MODULE`). Verified `OPERATOR.bio` present in `operator.ts` and `bio: string` in `types.ts`. `npx tsc --noEmit` = 0 errors. `npm run build` = ✓ 154 kB first-load. **Remaining blocker:** SkillOrrery.tsx from Codex (math helpers already in `src/components/skills/SkillOrrery.tsx`).
 

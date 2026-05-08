@@ -1,10 +1,11 @@
 # Phase 4 — Projects (8 R3F scenes + horizontal-pin gallery)
 
-> **Owners:** Claude Code (gallery + card template) + **Codex** (8 scenes + posters) + **Gemini** (data) + **ChatGPT** (descriptions) · **Estimated effort:** 3 sessions (Codex parallel batches) · **Prerequisites:** Phase 3 verification gate green; `src/data/projects.ts` populated.
+> **Owners:** Claude Code (gallery + card template) + **Codex** (9 scenes + posters) + **Gemini** (data) + **ChatGPT** (descriptions) · **Estimated effort:** 3 sessions (Codex parallel batches) · **Prerequisites:** Phase 3 verification gate green; `src/data/projects.ts` populated.
+> **D11:** Gallery expanded to 9 cards (PROJECT_04.09 — Chicago Crash Recidivism). All sizing derives from `PROJECTS.length`.
 
 ## Context
 
-Eight cards. Each has a unique R3F scene illustrating the project's core concept. Layout per **D5**: horizontal scroll-jacked carousel on desktop ≥768px, vertical pinned-stack on mobile <768px. Per **D7**, only the in-view card has its R3F Canvas mounted; off-screen cards show a static PNG poster. On mobile, posters only (no R3F).
+Nine cards (see D11). Each has a unique R3F scene illustrating the project's core concept. Layout per **D5**: horizontal scroll-jacked carousel on desktop ≥768px, vertical stack on mobile <768px. Per **D7**, only the in-view card has its R3F Canvas mounted; off-screen cards show a static PNG poster. On mobile, posters only (no R3F).
 
 ## Owners
 
@@ -13,7 +14,7 @@ Eight cards. Each has a unique R3F scene illustrating the project's core concept
 | `ProjectGallery.tsx` (layout, scroll architecture) | Claude Code |
 | `ProjectCard.tsx` (template, intersection-gated mount) | Claude Code |
 | `SceneSkeleton.tsx` (Suspense fallback) | Claude Code |
-| 8 scene components + 8 poster PNGs | **Codex** |
+| 9 scene components + 9 poster PNGs | **Codex** |
 | Mexico simplified GeoJSON | **Gemini** |
 | InsuLink graph layout, Wordle tree topology | **Gemini** |
 | 60-char project descriptions | **ChatGPT** |
@@ -94,6 +95,11 @@ Per scene, Codex must also:
 **Batch 4** — `WordleScene` + `OptionsScene`
 - Inputs: Gemini decision-tree topology for Wordle.
 
+**Batch 5** — `CrashesScene` (D11 — 9th project)
+- Inputs: `src/data/crashesGraph.ts` (already exists — 52 hotspots + flow edges + feature importance).
+- FUI label: `CRASH RISK PREDICTOR | RECORDS: ≈8M | ROC-AUC: 0.86`
+- Poster: `/public/posters/crashes.png`
+
 ## Sprint 4D — Gemini data generation
 
 Three handoff files generated upfront so Codex isn't blocked:
@@ -133,12 +139,12 @@ Output src/data/wordleTree.ts:
 | Only one Canvas in DOM at a time | DevTools Elements panel during scroll |
 | Each scene matches DESIGN.md §4.x | Codex screenshots attached |
 | Posters render on mobile (no R3F) | Network tab shows 0 GLSL files on 375px |
-| All 8 PNG posters in `public/posters/` | `ls public/posters/ | wc -l` == 8 |
+| All 9 PNG posters in `public/posters/` | `ls public/posters/ | wc -l` == 9 |
 | No "set on disposed object" warnings | DevTools console after 10 mount cycles |
 | TypeScript + build clean | Standard gates |
 
 ## Exit criteria
 
-- All 8 cards live, posters in place, gallery scroll architecture working both desktop and mobile.
+- All 9 cards live, posters in place, gallery scroll architecture working both desktop and mobile.
 - `progress.md` Phase 4 ticked. Component checklist updated.
 - Commit per batch: `feat(projects): batch N scenes (CDAS, Faultmap)` etc.
