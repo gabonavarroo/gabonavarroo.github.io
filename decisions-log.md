@@ -110,6 +110,18 @@
 
 ---
 
+## D11 — Project gallery expanded from 8 to 9 cards
+
+- **Status:** Accepted
+- **Date:** 2026-05-07
+- **Decided by:** User
+- **Context:** Phase 4A brief specified 9 projects because Chicago Crash Recidivism (PROJECT_04.09) was added after the original 8-project plan. Multiple plan files and the CLAUDE.md hardcoded "8" in several places.
+- **Decision:** Gallery has **9 cards**. All scroll widths, scroll distances, section counters, and scene registry entries derive from `PROJECTS.length` — never hardcode 8.
+- **Alternatives considered:** Keep at 8 and add Crashes in a later phase (rejected — user explicitly required 9 for Phase 4A).
+- **Consequences:** `CrashesScene.tsx` stub added to scene registry; `/public/posters/crashes.png` required from Codex; `src/data/crashesGraph.ts` already exists. `plans/phase-4-projects.md` and `progress.md` updated.
+
+---
+
 ## (template for future entries)
 
 ```
@@ -123,12 +135,3 @@
 - **Alternatives considered:** <briefly>
 - **Consequences:** <what changes downstream>
 ```
-
-
-D11 — Project gallery expanded from 8 to 9 cards
-
-Decision:
-Add Chicago Crash Recidivism as PROJECT_04.09. ProjectGallery must derive all sizing, scroll distance, scene registry, and poster checks from PROJECTS.length instead of hardcoding 8.
-
-Consequences:
-Add CrashesScene.tsx, /public/posters/crashes.png, and optional src/data/crashesGraph.ts.

@@ -113,4 +113,16 @@ export const PROJECTS: Project[] = [
     posterPath: '/posters/options.png',
     sceneId: 'options',
   },
+  {
+    id: 'PROJECT_04.09',
+    title: 'Chicago Crash Recidivism',
+    codename: 'CRASH RISK PREDICTOR',
+    role: 'Data Engineer & ML Engineer',
+    year: 2024,
+    stack: ['Python', 'XGBoost', 'PostgreSQL', 'GeoPandas', 'Pandas'],
+    description:
+      'Crash recidivism model over 8M records. 4NF data modeling, geospatial hotspot analysis, XGBoost ensemble with ROC-AUC 0.86.',
+    posterPath: '/posters/crashes.png',
+    sceneId: 'crashes',
+  },
 ];

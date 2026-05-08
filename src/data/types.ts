@@ -45,7 +45,7 @@ export interface Operator {
   clearance: string;
   languages: string[];
   statement: string;
-  bio:string
+    bio:string
   email: string;
   github: string;
   linkedin: string;
