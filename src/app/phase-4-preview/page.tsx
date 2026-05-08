@@ -1,19 +1,38 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import CDASScene from '@/components/projects/scenes/CDASScene';
+import CrashesScene from '@/components/projects/scenes/CrashesScene';
+import GeneticScene from '@/components/projects/scenes/GeneticScene';
 import InsuLinkScene from '@/components/projects/scenes/InsuLinkScene';
+import OptionsScene from '@/components/projects/scenes/OptionsScene';
 import PharmacyScene from '@/components/projects/scenes/PharmacyScene';
+import PipelineScene from '@/components/projects/scenes/PipelineScene';
 import WordleScene from '@/components/projects/scenes/WordleScene';
 
 export default function Phase4Preview() {
-  const scene = useMemo(() => {
-    if (typeof window === 'undefined') return 'cdas';
-    return new URLSearchParams(window.location.search).get('scene') ?? 'cdas';
+  const [scene, setScene] = useState('cdas');
+
+  useEffect(() => {
+    setScene(new URLSearchParams(window.location.search).get('scene') ?? 'cdas');
   }, []);
 
   const SceneComponent =
-    scene === 'insulink' ? InsuLinkScene : scene === 'wordle' ? WordleScene : scene === 'pharmacy' ? PharmacyScene : CDASScene;
+    scene === 'crashes'
+      ? CrashesScene
+      : scene === 'insulink'
+        ? InsuLinkScene
+        : scene === 'wordle'
+          ? WordleScene
+          : scene === 'pharmacy'
+            ? PharmacyScene
+            : scene === 'pipeline'
+              ? PipelineScene
+              : scene === 'options'
+        ? OptionsScene
+                : scene === 'genetic'
+                  ? GeneticScene
+                  : CDASScene;
 
   return (
     <main

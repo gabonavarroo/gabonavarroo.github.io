@@ -4,7 +4,7 @@
 
 ## Current Phase: **4 — Projects (next)**
 ## Active sprint: Sprint 4 (not started)
-## Last updated: 2026-05-07 by Claude Code
+## Last updated: 2026-05-07 by Codex
 
 ---
 
@@ -114,6 +114,8 @@
 ---
 
 ## Session log (append-only, newest first)
+
+- **2026-05-07 — Codex.** Batch A Phase 4 CDAS + Pharmacy verification pass. Confirmed `src/components/projects/scenes/CDASScene.tsx` renders the Mexico search grid with 32 state boundaries, 46 peripheral source nodes, amber/red match hotspots, fuzzy-match beams, scan sweeps, and reticle/core overlays. Confirmed `src/components/projects/scenes/PharmacyScene.tsx` renders the P-median facility-location scene with Mexico boundaries, 200-ish scored candidate points, 47 selected pharmacy nodes, orange coverage rings, score beams, and pruning markers. Regenerated required artifacts from browser-rendered static scene harnesses: `handoffs/phase-4-cdas-scene.png` (1280×900), `handoffs/phase-4-pharmacy-scene.png` (1280×900), `public/posters/cdas.png` (1200×900), `public/posters/pharmacy.png` (1200×900). Verification: `npm run type-check` = 0 errors; `npm run build` = ✓ static export; `sips -g pixelWidth -g pixelHeight ...` confirmed required dimensions.
 
 - **2026-05-07 — Claude Code (Sonnet 4.6).** Phase 4A complete. Added PROJECT_04.09 (Chicago Crash Recidivism) to `src/data/projects.ts` per D11. Created gallery architecture: `ProjectGallery.tsx` (GSAP ScrollTrigger horizontal pin desktop / vertical stack mobile, width derived from `PROJECTS.length`), `ProjectCard.tsx` (IntersectionObserver-gated scene mount, poster fallback with onError → SceneSkeleton, OPEN DOSSIER primary action, GH/live secondary actions), `SceneSkeleton.tsx` (spinner fallback for Suspense), `ProjectDossierOverlay.tsx` (portal to document.body, GSAP expo.out slide-in, ESC handler, full project meta). Created scene registry at `src/components/projects/scenes/sceneRegistry.ts` (9 entries via `React.lazy`). Created stubs for all 9 scenes (CDASScene, FaultmapScene, PharmacyScene, PipelineScene, InsuLinkScene, GeneticScene, WordleScene, OptionsScene, CrashesScene). Note: CDASScene and PharmacyScene were immediately replaced by hook-delivered Codex R3F implementations (Mexico map + hotspots; P-median solver). Added gallery/card/dossier CSS to `globals.css`. Created `src/lib/useIsMobile.ts`. Wired `ProjectGallery` into `page.tsx` as `ssr:false` dynamic import after SkillOrrery. Updated `decisions-log.md` (D11 formalized), `progress.md`, `plans/phase-4-projects.md` (8→9 throughout). `npx tsc --noEmit` = 0 errors. `npm run build` = ✓ 155 kB first-load. **Next Codex batches needed:** FaultmapScene, PipelineScene, InsuLinkScene, GeneticScene, WordleScene, OptionsScene, CrashesScene + all 9 poster PNGs to `public/posters/`.
 
