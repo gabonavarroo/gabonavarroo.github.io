@@ -2,9 +2,9 @@
 
 > Operational source of truth between agent sessions. Every agent must read this at session start and update it at session end. See `AGENTS.md` § "Orchestration Files" for the protocol.
 
-## Current Phase: **4 — Projects (next)**
-## Active sprint: Sprint 4 (not started)
-## Last updated: 2026-05-07 by Codex
+## Current Phase: **5 — Experience, Labs, Contact (next)**
+## Active sprint: Sprint 5 (not started — needs API keys)
+## Last updated: 2026-05-08 by Claude Code (Sonnet 4.6)
 
 ---
 
@@ -32,7 +32,13 @@
   - SkillOrrery: R3F Canvas, 4 inclined orbit rings (Gemini math), 5 skill pods (RoundedBox), Bloom postprocessing, hover expand + tech nodes, auto-rotate, OrbitControls, WebGLErrorBoundary + BloomBoundary isolation
   - GitHub Actions deploy.yml created; public/.nojekyll added
   - `npx tsc --noEmit` = 0 errors · `npm run build` = ✓ 155 kB first load
-- [ ] **Phase 4** — Projects (9 R3F scenes + horizontal-pin gallery)
+- [x] **Phase 4** — Projects (9 R3F scenes + horizontal-pin gallery) *(Claude Code + Codex, 2026-05-08)*
+  - All 9 scenes delivered (CDASScene, FaultmapScene, PharmacyScene, PipelineScene, InsuLinkScene, GeneticScene, WordleScene, OptionsScene, CrashesScene)
+  - All 9 posters in `public/posters/` (cdas, faultmap, pharmacy, pipeline, insulink, genetic, wordle, options, crashes)
+  - ProjectGallery horizontal-pin desktop / vertical-stack mobile; width from PROJECTS.length
+  - IntersectionObserver scene gating (only in-view card mounts Canvas)
+  - SkillOrrery scroll trap fixed (enableZoom=false + 80px bottom scroll zone + fallback colors)
+  - `npx tsc --noEmit` = 0 errors · `npm run build` = ✓ 155 kB first load
 - [ ] **Phase 5** — Experience, Labs, Contact
 - [ ] **Phase 6** — Polish, performance, deploy
 
@@ -74,20 +80,20 @@
 | `ParticleRunner.tsx` | 2 | **Codex** | ✅ done | `handoffs/particle-runner-start.png`, `handoffs/particle-runner-mid.png`, `handoffs/particle-runner-exit-scatter.png`, `handoffs/particle-runner-mobile.png` | temporary page mount only for QA; restored |
 | `AboutPanel.tsx` | 3 | Claude Code | ✅ done | tsc clean, build clean | 40/60 grid, GSAP row type-in, PhotoShader integrated |
 | `PhotoShader.tsx` | 3 | **Codex** | ✅ done | scanline + cyan grade | screenshots in handoffs/ |
-| `SkillOrrery.tsx` | 3 | **Codex** | 🔲 | hover expands pod | **BLOCKED — Codex session ran out; placeholder in page.tsx** |
+| `SkillOrrery.tsx` | 3 | **Codex** | ✅ done | full R3F orbital scene, hover expand, bloom | scroll trap fixed 2026-05-08 (enableZoom=false + 80px scroll zone) |
 | `ProjectGallery.tsx` | 4 | Claude Code | ✅ done | horizontal pin desktop, vertical mobile | 9 cards via PROJECTS.length |
 | `ProjectCard.tsx` | 4 | Claude Code | ✅ done | IntersectionObserver gating, poster fallback | OPEN DOSSIER + GH actions |
 | `SceneSkeleton.tsx` | 4 | Claude Code | ✅ done | Suspense spinner | |
 | `ProjectDossierOverlay.tsx` | 4 | Claude Code | ✅ done | slide-in portal, ESC close | GSAP expo.out |
 | `CDASScene.tsx` + poster | 4 | **Codex** | ✅ done | R3F Mexico map + hotspots | stub replaced by hook delivery |
-| `FaultmapScene.tsx` + poster | 4 | **Codex** | 🔲 | scene + 1200×900 PNG | stub in place |
+| `FaultmapScene.tsx` + poster | 4 | **Codex** | ✅ done | embedding constellation, cluster severity, pipeline nodes | 634 lines; handoff in handoffs/ |
 | `PharmacyScene.tsx` + poster | 4 | **Codex** | ✅ done | R3F P-median solver viz | hook delivery; reuses Mexico GeoJSON |
-| `PipelineScene.tsx` + poster | 4 | **Codex** | 🔲 | | stub in place |
-| `InsuLinkScene.tsx` + poster | 4 | **Codex** | 🔲 | | + graph layout from Gemini |
-| `GeneticScene.tsx` + poster | 4 | **Codex** | 🔲 | | stub in place |
-| `WordleScene.tsx` + poster | 4 | **Codex** | 🔲 | | + tree topology from Gemini |
-| `OptionsScene.tsx` + poster | 4 | **Codex** | 🔲 | | stub in place |
-| `CrashesScene.tsx` + poster | 4 | **Codex** | 🔲 | scene + 1200×900 PNG | D11 — 9th project; stub in place |
+| `PipelineScene.tsx` + poster | 4 | **Codex** | ✅ done | layered data-flow with Akamai/proxy/DB nodes | 324 lines |
+| `InsuLinkScene.tsx` + poster | 4 | **Codex** | ✅ done | patient-doctor network graph, care signals | 553 lines; insulinkGraph.ts data |
+| `GeneticScene.tsx` + poster | 4 | **Codex** | ✅ done | GA curve-fitting animation, multi-gen convergence | 547 lines |
+| `WordleScene.tsx` + poster | 4 | **Codex** | ✅ done | decision-tree pruning, optimal path highlight | 456 lines; wordleTree.ts data |
+| `OptionsScene.tsx` + poster | 4 | **Codex** | ✅ done | volatility surface + options-flow terminal | 345 lines |
+| `CrashesScene.tsx` + poster | 4 | **Codex** | ✅ done | 52-hotspot Chicago risk map, feature importance | 644 lines; crashesGraph.ts data |
 | `MissionLog.tsx` | 5 | Claude Code | 🔲 | timeline animates | |
 | `useGitHubStats.ts` | 5 | Claude Code | 🔲 | live data renders | handle: `gabonavarroo` |
 | `useWeather.ts` | 5 | Claude Code | 🔲 | Mexico City temp renders | |
@@ -103,7 +109,8 @@
 
 ## Open blockers
 
-- **SkillOrrery.tsx** — Codex session ran out before delivering the R3F orbital scene. `plans/phase-3-about-skills.md` Sprint 3C describes the full spec. Temporary placeholder in `page.tsx` (data-section="skills") must be replaced when Codex delivers `src/components/skills/SkillOrrery.tsx`. The math helpers (`ORBIT_RADII`, `ORBIT_INCLINATIONS`, `getPodPosition`) are already present in `src/components/skills/SkillOrrery.tsx` from a prior Gemini handoff.
+- **Debug pages** — Codex left behind 4 debug routes: `src/app/phase-4-preview/` (304 KB build chunk), `src/app/scene-faultmap/`, `src/app/scene-cdas/` (empty dir), `src/app/scene-pharmacy/` (empty dir). These inflate the build and should be deleted before Phase 6 deploy. Not blocking Phase 5.
+- **Phase 5 API keys needed** — OpenWeatherMap API key (`NEXT_PUBLIC_WEATHER_KEY`) and EmailJS credentials (`NEXT_PUBLIC_EMAILJS_SERVICE_ID`, `NEXT_PUBLIC_EMAILJS_TEMPLATE_ID`, `NEXT_PUBLIC_EMAILJS_PUBLIC_KEY`) must be added to `.env.local` before building Phase 5 components. See `assets-checklist.md`.
 
 ---
 
@@ -114,6 +121,8 @@
 ---
 
 ## Session log (append-only, newest first)
+
+- **2026-05-08 — Claude Code (Sonnet 4.6).** Phase 4 integration & verification pass. Confirmed all 9 scene files present (CDASScene 524L, FaultmapScene 634L, PharmacyScene 518L, PipelineScene 324L, InsuLinkScene 553L, GeneticScene 547L, WordleScene 456L, OptionsScene 345L, CrashesScene 644L). Confirmed all 9 poster PNGs in `public/posters/`. Confirmed sceneRegistry.ts imports all 9 via React.lazy. Confirmed PROJECTS array has 9 entries with matching sceneIds. Confirmed ProjectGallery derives width from PROJECTS.length, IntersectionObserver gates one Canvas at a time, mobile uses posters only. Fixed 2 SkillOrrery bugs: (1) blank initial render — `useSkillColors` now initializes with `FALLBACK_COLORS` (hardcoded hex) instead of null, so the Canvas renders on first paint; (2) scroll trap — added `enableZoom={false}` to OrbitControls so wheel events bubble to the document instead of being intercepted, plus an explicit 80px non-canvas scroll zone at the bottom of the section. Updated `progress.md` (Phase 4 ✅, all scene rows ✅, SkillOrrery ✅, stale blocker removed, Phase 5 blockers added). `npx tsc --noEmit` = 0 errors. `npm run build` = ✓ 155 kB first load. **Remaining cleanup:** delete 4 Codex debug routes before Phase 6. **Next:** Phase 5 (MissionLog, SystemMonitor, TransmissionPanel) — needs API keys in `.env.local`.
 
 - **2026-05-07 — Codex.** Batch A Phase 4 CDAS + Pharmacy verification pass. Confirmed `src/components/projects/scenes/CDASScene.tsx` renders the Mexico search grid with 32 state boundaries, 46 peripheral source nodes, amber/red match hotspots, fuzzy-match beams, scan sweeps, and reticle/core overlays. Confirmed `src/components/projects/scenes/PharmacyScene.tsx` renders the P-median facility-location scene with Mexico boundaries, 200-ish scored candidate points, 47 selected pharmacy nodes, orange coverage rings, score beams, and pruning markers. Regenerated required artifacts from browser-rendered static scene harnesses: `handoffs/phase-4-cdas-scene.png` (1280×900), `handoffs/phase-4-pharmacy-scene.png` (1280×900), `public/posters/cdas.png` (1200×900), `public/posters/pharmacy.png` (1200×900). Verification: `npm run type-check` = 0 errors; `npm run build` = ✓ static export; `sips -g pixelWidth -g pixelHeight ...` confirmed required dimensions.
 

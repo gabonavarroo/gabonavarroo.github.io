@@ -154,8 +154,31 @@ function usePrefersReducedMotion() {
   return prefersReducedMotion;
 }
 
+const FALLBACK_COLORS: SkillColorMap = {
+  '--cyan-pure': '#00D4FF',
+  '--cyan-dim': '#007A99',
+  '--cyan-ghost': '#00D4FF18',
+  '--bg-void': '#05080F',
+  '--bg-surface': '#0D1520',
+  '--border-dim': '#1A2840',
+  '--text-primary': '#E2E8F0',
+  '--text-secondary': '#8BA3C0',
+  '--blue-electric': '#2288FF',
+  '--system-green': '#00FF88',
+  '--data-gold': '#FFCC44',
+  '--bio-teal': '#00CCAA',
+  cyanPure: '#00D4FF',
+  cyanDim: '#007A99',
+  cyanGhost: '#00D4FF18',
+  bgVoid: '#05080F',
+  bgSurface: '#0D1520',
+  borderDim: '#1A2840',
+  textPrimary: '#E2E8F0',
+  textSecondary: '#8BA3C0',
+};
+
 function useSkillColors() {
-  const [colors, setColors] = useState<SkillColorMap | null>(null);
+  const [colors, setColors] = useState<SkillColorMap>(FALLBACK_COLORS);
 
   useEffect(() => {
     const styles = getComputedStyle(document.documentElement);
@@ -536,10 +559,9 @@ function SkillScene({
       <OrbitControls
         ref={controlsRef}
         enablePan={false}
+        enableZoom={false}
         enableDamping
         dampingFactor={0.05}
-        minDistance={4.8}
-        maxDistance={9.5}
         autoRotate={!focusedId && !reducedMotion}
         autoRotateSpeed={0.4}
       />
@@ -644,11 +666,35 @@ export function SkillOrrery({ className, style }: SkillOrreryProps) {
           camera={{ position: [0, 1.1, 7.2], fov: 46, near: 0.1, far: 100 }}
           dpr={[1, 2]}
           gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
-          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
+          style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: 'calc(100% - 80px)' }}
         >
-          {colors && <SkillScene colors={colors} reducedMotion={reducedMotion} />}
+          <SkillScene colors={colors} reducedMotion={reducedMotion} />
         </Canvas>
       </WebGLErrorBoundary>
+
+      {/* Scroll zone — non-canvas strip so the user can scroll past the OrbitControls canvas */}
+      <div
+        aria-hidden
+        style={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          height: 80,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          borderTop: '1px solid var(--border-dim)',
+          pointerEvents: 'none',
+        }}
+      >
+        <span
+          className="hud-label"
+          style={{ color: 'var(--text-muted)', letterSpacing: '0.14em' }}
+        >
+          DRAG TO ORBIT · HOVER TO INSPECT · SCROLL TO CONTINUE ↓
+        </span>
+      </div>
     </section>
   );
 }
