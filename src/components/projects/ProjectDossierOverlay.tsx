@@ -4,14 +4,37 @@ import { createPortal } from 'react-dom';
 import { gsap } from '@/lib/gsap';
 import { GlowButton } from '@/components/ui/GlowButton';
 import type { Project } from '@/data/types';
+import { PROJECT_DOSSIERS } from '@/data/projectDossiers';
 
 interface ProjectDossierOverlayProps {
   project: Project;
   onClose: () => void;
 }
 
+function SectionLabel({ label }: { label: string }) {
+  return (
+    <span
+      className="hud-label"
+      style={{
+        display: 'block',
+        color: 'var(--cyan-dim)',
+        fontSize: 9,
+        letterSpacing: '0.18em',
+        marginBottom: 10,
+      }}
+    >
+      {label}
+    </span>
+  );
+}
+
+function Divider() {
+  return <div style={{ height: 1, background: 'var(--border-dim)', margin: '4px 0' }} />;
+}
+
 export function ProjectDossierOverlay({ project, onClose }: ProjectDossierOverlayProps) {
   const panelRef = useRef<HTMLDivElement>(null);
+  const dossier = PROJECT_DOSSIERS[project.sceneId] ?? null;
 
   // Slide in on mount
   useEffect(() => {
@@ -71,7 +94,7 @@ export function ProjectDossierOverlay({ project, onClose }: ProjectDossierOverla
           padding: '32px',
           display: 'flex',
           flexDirection: 'column',
-          gap: 24,
+          gap: 20,
           transform: 'translateX(100%)',
         }}
       >
@@ -119,6 +142,7 @@ export function ProjectDossierOverlay({ project, onClose }: ProjectDossierOverla
           </div>
           <button
             onClick={close}
+            className="dossier-close-btn"
             aria-label="Close dossier"
             style={{
               background: 'none',
@@ -137,15 +161,14 @@ export function ProjectDossierOverlay({ project, onClose }: ProjectDossierOverla
           </button>
         </div>
 
-        {/* Divider */}
-        <div style={{ height: 1, background: 'var(--border-med)' }} />
+        <Divider />
 
         {/* Meta rows */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           {([
-            { label: 'ROLE',      value: project.role },
-            { label: 'YEAR',      value: String(project.year) },
-            { label: 'STATUS',    value: 'ARCHIVED' },
+            { label: 'ROLE',   value: project.role },
+            { label: 'YEAR',   value: String(project.year) },
+            { label: 'STATUS', value: 'ARCHIVED' },
           ] as Array<{ label: string; value: string }>).map(({ label, value }) => (
             <div key={label} style={{ display: 'flex', gap: 16, alignItems: 'baseline' }}>
               <span
@@ -154,40 +177,132 @@ export function ProjectDossierOverlay({ project, onClose }: ProjectDossierOverla
               >
                 {label}
               </span>
-              <span
-                style={{
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: 13,
-                  color: 'var(--text-primary)',
-                }}
-              >
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: 13, color: 'var(--text-primary)' }}>
                 {value}
               </span>
             </div>
           ))}
         </div>
 
-        {/* Description */}
-        <p
-          style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: 14,
-            color: 'var(--text-secondary)',
-            lineHeight: 1.7,
-            margin: 0,
-          }}
-        >
-          {project.description}
-        </p>
+        <Divider />
 
-        {/* Stack */}
+        {dossier ? (
+          <>
+            {/* MISSION */}
+            <div>
+              <SectionLabel label="MISSION" />
+              <p
+                style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: 13,
+                  color: 'var(--text-secondary)',
+                  lineHeight: 1.75,
+                  margin: 0,
+                }}
+              >
+                {dossier.mission}
+              </p>
+            </div>
+
+            <Divider />
+
+            {/* ARCHITECTURE */}
+            <div>
+              <SectionLabel label="ARCHITECTURE" />
+              <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 8 }}>
+                {dossier.architecture.map((line, i) => (
+                  <li key={i} style={{ display: 'flex', gap: 10 }}>
+                    <span style={{ color: 'var(--cyan-dim)', fontFamily: 'var(--font-mono)', fontSize: 11, marginTop: 1, flexShrink: 0 }}>▸</span>
+                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--text-secondary)', lineHeight: 1.65 }}>{line}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <Divider />
+
+            {/* CORE OPERATIONS */}
+            <div>
+              <SectionLabel label="CORE OPERATIONS" />
+              <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 8 }}>
+                {dossier.coreOperations.map((line, i) => (
+                  <li key={i} style={{ display: 'flex', gap: 10 }}>
+                    <span style={{ color: 'var(--system-green)', fontFamily: 'var(--font-mono)', fontSize: 11, marginTop: 1, flexShrink: 0 }}>▸</span>
+                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--text-secondary)', lineHeight: 1.65 }}>{line}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <Divider />
+
+            {/* METRICS */}
+            <div>
+              <SectionLabel label="METRICS" />
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                {dossier.metrics.map((m, i) => (
+                  <span
+                    key={i}
+                    style={{
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: 11,
+                      padding: '4px 10px',
+                      border: '1px solid var(--cyan-dim)',
+                      color: 'var(--cyan-pure)',
+                      letterSpacing: '0.05em',
+                      background: 'rgba(0,212,255,0.04)',
+                    }}
+                  >
+                    {m}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <Divider />
+
+            {/* TECHNICAL SIGNAL */}
+            <div>
+              <SectionLabel label="TECHNICAL SIGNAL" />
+              <p
+                style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: 12,
+                  color: 'var(--text-muted)',
+                  lineHeight: 1.75,
+                  margin: 0,
+                  borderLeft: '2px solid var(--cyan-dim)',
+                  paddingLeft: 12,
+                  fontStyle: 'italic',
+                }}
+              >
+                {dossier.technicalSignal}
+              </p>
+            </div>
+
+            <Divider />
+          </>
+        ) : (
+          /* Graceful fallback when no dossier entry exists */
+          <>
+            <p
+              style={{
+                fontFamily: 'var(--font-mono)',
+                fontSize: 14,
+                color: 'var(--text-secondary)',
+                lineHeight: 1.7,
+                margin: 0,
+              }}
+            >
+              {project.description}
+            </p>
+            <Divider />
+          </>
+        )}
+
+        {/* Tech Stack */}
         <div>
-          <span
-            className="hud-label"
-            style={{ color: 'var(--text-muted)', display: 'block', marginBottom: 10, fontSize: 10 }}
-          >
-            TECH STACK
-          </span>
+          <SectionLabel label="TECH STACK" />
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
             {project.stack.map((tech) => (
               <span
@@ -208,23 +323,14 @@ export function ProjectDossierOverlay({ project, onClose }: ProjectDossierOverla
         </div>
 
         {/* Actions */}
-        <div style={{ display: 'flex', gap: 12, marginTop: 'auto', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', gap: 12, marginTop: 'auto', paddingTop: 8, flexWrap: 'wrap' }}>
           {project.github && (
-            <GlowButton
-              href={project.github}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <GlowButton href={project.github} target="_blank" rel="noopener noreferrer">
               ↗ GITHUB
             </GlowButton>
           )}
           {project.live && (
-            <GlowButton
-              href={project.live}
-              variant="secondary"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <GlowButton href={project.live} variant="secondary" target="_blank" rel="noopener noreferrer">
               ↗ LIVE DEMO
             </GlowButton>
           )}
@@ -233,7 +339,6 @@ export function ProjectDossierOverlay({ project, onClose }: ProjectDossierOverla
     </>
   );
 
-  // Only render portal on client
   if (typeof document === 'undefined') return null;
   return createPortal(content, document.body);
 }

@@ -1,0 +1,12 @@
+[mcp_servers.puppeteer]
+args = [
+    "-y",
+    "@modelcontextprotocol/server-puppeteer",
+]
+command = "npx"
+
+[mcp_servers.puppeteer.tools.puppeteer_screenshot]
+approval_mode = "approve"
+
+[mcp_servers.puppeteer.tools.puppeteer_navigate]
+approval_mode = "approve"

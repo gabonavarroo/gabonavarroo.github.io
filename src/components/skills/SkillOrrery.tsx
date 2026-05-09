@@ -2,8 +2,8 @@
 
 import { Component, useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { Canvas, useFrame, type ThreeEvent } from '@react-three/fiber';
-import { OrbitControls, RoundedBox, Text } from '@react-three/drei';
-import { Bloom, EffectComposer } from '@react-three/postprocessing';
+import { OrbitControls, RoundedBox } from '@react-three/drei';
+
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import * as THREE from 'three';
 import { gsap } from '@/lib/gsap';
@@ -74,6 +74,172 @@ const TOKEN_NAMES = [
 
 const tmpVector = new THREE.Vector3();
 
+type LabelAlign = 'center' | 'left';
+
+interface CanvasLabelProps {
+  text: string;
+  color: string;
+  width?: number;
+  height?: number;
+  fontSize?: number;
+  position?: [number, number, number];
+  scale?: [number, number, number];
+  align?: LabelAlign;
+  maxLines?: number;
+  letterSpacing?: number;
+}
+
+function isUsableColor(value: string | undefined): value is string {
+  return Boolean(value && value.trim().length > 0);
+}
+
+function wrapCanvasText(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  maxWidth: number,
+  maxLines: number
+) {
+  const words = text.split(/\s+/);
+  const lines: string[] = [];
+  let line = '';
+
+  words.forEach((word) => {
+    const nextLine = line ? `${line} ${word}` : word;
+    if (ctx.measureText(nextLine).width <= maxWidth || !line) {
+      line = nextLine;
+      return;
+    }
+
+    lines.push(line);
+    line = word;
+  });
+
+  if (line) lines.push(line);
+
+  if (lines.length > maxLines) {
+    const visible = lines.slice(0, maxLines);
+    let last = visible[visible.length - 1];
+    while (last.length > 0 && ctx.measureText(`${last}...`).width > maxWidth) {
+      last = last.slice(0, -1);
+    }
+    visible[visible.length - 1] = `${last.trimEnd()}...`;
+    return visible;
+  }
+
+  return lines;
+}
+
+function createLabelTexture({
+  text,
+  color,
+  width,
+  height,
+  fontSize,
+  align,
+  maxLines,
+  letterSpacing,
+}: Required<Pick<CanvasLabelProps, 'text' | 'color' | 'width' | 'height' | 'fontSize' | 'align' | 'maxLines' | 'letterSpacing'>>) {
+  const canvas = document.createElement('canvas');
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  canvas.width = width * dpr;
+  canvas.height = height * dpr;
+
+  const ctx = canvas.getContext('2d');
+  if (!ctx) {
+    return new THREE.CanvasTexture(canvas);
+  }
+
+  ctx.scale(dpr, dpr);
+  ctx.clearRect(0, 0, width, height);
+  ctx.font = `600 ${fontSize}px "JetBrains Mono", "Fira Code", monospace`;
+  ctx.textBaseline = 'middle';
+  ctx.textAlign = align;
+  ctx.fillStyle = color;
+  ctx.shadowColor = color;
+  ctx.shadowBlur = 10;
+
+  const paddedWidth = width - 32;
+  const lines = wrapCanvasText(ctx, text, paddedWidth, maxLines);
+  const lineHeight = fontSize * 1.22;
+  const totalHeight = (lines.length - 1) * lineHeight;
+  const x = align === 'center' ? width / 2 : 16;
+
+  lines.forEach((line, index) => {
+    const y = height / 2 - totalHeight / 2 + index * lineHeight;
+    if (letterSpacing <= 0 || align !== 'center') {
+      ctx.fillText(line, x, y);
+      return;
+    }
+
+    const chars = line.split('');
+    const textWidth = chars.reduce((sum, char) => sum + ctx.measureText(char).width, 0);
+    const spacingWidth = (chars.length - 1) * letterSpacing;
+    let cursor = width / 2 - (textWidth + spacingWidth) / 2;
+    chars.forEach((char) => {
+      ctx.fillText(char, cursor, y);
+      cursor += ctx.measureText(char).width + letterSpacing;
+    });
+  });
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.anisotropy = 4;
+  texture.needsUpdate = true;
+  return texture;
+}
+
+function CanvasLabel({
+  text,
+  color,
+  width = 512,
+  height = 128,
+  fontSize = 48,
+  position = [0, 0, 0],
+  scale = [1, 0.25, 1],
+  align = 'center',
+  maxLines = 1,
+  letterSpacing = 0,
+}: CanvasLabelProps) {
+  const texture = useMemo(
+    () =>
+      createLabelTexture({
+        text,
+        color,
+        width,
+        height,
+        fontSize,
+        align,
+        maxLines,
+        letterSpacing,
+      }),
+    [align, color, fontSize, height, letterSpacing, maxLines, text, width]
+  );
+
+  const material = useMemo(
+    () =>
+      new THREE.MeshBasicMaterial({
+        map: texture,
+        transparent: true,
+        depthWrite: false,
+        toneMapped: false,
+      }),
+    [texture]
+  );
+
+  useEffect(() => {
+    return () => {
+      texture.dispose();
+      material.dispose();
+    };
+  }, [material, texture]);
+
+  return (
+    <mesh position={position} scale={scale} material={material}>
+      <planeGeometry args={[1, 1]} />
+    </mesh>
+  );
+}
+
 export function getPodPosition(
   ringIndex: PodRingIndex,
   theta: number
@@ -133,11 +299,6 @@ class WebGLErrorBoundary extends Component<{ children: ReactNode }, BoundaryStat
   }
 }
 
-class BloomBoundary extends Component<{ children: ReactNode }, BoundaryState> {
-  state: BoundaryState = { hasError: false };
-  static getDerivedStateFromError(): BoundaryState { return { hasError: true }; }
-  render() { return this.state.hasError ? null : this.props.children; }
-}
 
 function usePrefersReducedMotion() {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
@@ -152,6 +313,21 @@ function usePrefersReducedMotion() {
   }, []);
 
   return prefersReducedMotion;
+}
+
+function useStaticOrreryFallback() {
+  const [staticFallback, setStaticFallback] = useState(false);
+
+  useEffect(() => {
+    const media = window.matchMedia('(pointer: coarse), (max-width: 767px)');
+    const update = () => setStaticFallback(media.matches);
+
+    update();
+    media.addEventListener('change', update);
+    return () => media.removeEventListener('change', update);
+  }, []);
+
+  return staticFallback;
 }
 
 const FALLBACK_COLORS: SkillColorMap = {
@@ -182,22 +358,25 @@ function useSkillColors() {
 
   useEffect(() => {
     const styles = getComputedStyle(document.documentElement);
-    const resolved: Record<string, string> = {};
+    const resolved: SkillColorMap = { ...FALLBACK_COLORS };
 
     TOKEN_NAMES.forEach((token) => {
-      resolved[token] = styles.getPropertyValue(token).trim();
+      const cssValue = styles.getPropertyValue(token).trim();
+      resolved[token] = isUsableColor(cssValue)
+        ? cssValue
+        : FALLBACK_COLORS[token] || FALLBACK_COLORS.cyanPure;
     });
 
     setColors({
       ...resolved,
-      cyanPure: resolved['--cyan-pure'],
-      cyanDim: resolved['--cyan-dim'],
-      cyanGhost: resolved['--cyan-ghost'],
-      bgVoid: resolved['--bg-void'],
-      bgSurface: resolved['--bg-surface'],
-      borderDim: resolved['--border-dim'],
-      textPrimary: resolved['--text-primary'],
-      textSecondary: resolved['--text-secondary'],
+      cyanPure: resolved['--cyan-pure'] || FALLBACK_COLORS.cyanPure,
+      cyanDim: resolved['--cyan-dim'] || FALLBACK_COLORS.cyanDim,
+      cyanGhost: resolved['--cyan-ghost'] || FALLBACK_COLORS.cyanGhost,
+      bgVoid: resolved['--bg-void'] || FALLBACK_COLORS.bgVoid,
+      bgSurface: resolved['--bg-surface'] || FALLBACK_COLORS.bgSurface,
+      borderDim: resolved['--border-dim'] || FALLBACK_COLORS.borderDim,
+      textPrimary: resolved['--text-primary'] || FALLBACK_COLORS.textPrimary,
+      textSecondary: resolved['--text-secondary'] || FALLBACK_COLORS.textSecondary,
     });
   }, []);
 
@@ -336,17 +515,16 @@ function TechNodeCluster({
                 roughness={0.35}
               />
             </mesh>
-            <Text
+            <CanvasLabel
+              text={skill.name.toUpperCase()}
               position={[0, -0.12, 0]}
-              fontSize={0.07}
-              anchorX="center"
-              anchorY="middle"
               color={textColor}
-              maxWidth={0.72}
-              textAlign="center"
-            >
-              {skill.name.toUpperCase()}
-            </Text>
+              width={512}
+              height={160}
+              fontSize={40}
+              scale={[0.72, 0.23, 1]}
+              maxLines={2}
+            />
           </group>
         );
       })}
@@ -456,27 +634,26 @@ function SkillPod({
     >
       <RoundedBox args={[1.12, 0.42, 0.16]} radius={0.05} smoothness={5} material={podMaterial} />
       <RoundedBox args={[1.2, 0.5, 0.18]} radius={0.055} smoothness={5} material={borderMaterial} />
-      <Text
+      <CanvasLabel
+        text={assignment.category.label.toUpperCase()}
         position={[0, 0.035, 0.101]}
-        fontSize={0.115}
-        anchorX="center"
-        anchorY="middle"
         color={colors.textPrimary}
-        maxWidth={0.92}
-        textAlign="center"
-      >
-        {assignment.category.label.toUpperCase()}
-      </Text>
-      <Text
+        width={768}
+        height={168}
+        fontSize={56}
+        scale={[0.96, 0.21, 1]}
+        maxLines={1}
+      />
+      <CanvasLabel
+        text={`CORE:${assignment.category.skills.filter((skill) => skill.level === 'core').length}`}
         position={[0, -0.13, 0.101]}
-        fontSize={0.055}
-        anchorX="center"
-        anchorY="middle"
         color={color}
-        letterSpacing={0.08}
-      >
-        {`CORE:${assignment.category.skills.filter((skill) => skill.level === 'core').length}`}
-      </Text>
+        width={384}
+        height={96}
+        fontSize={36}
+        scale={[0.46, 0.12, 1]}
+        letterSpacing={2}
+      />
       <group ref={techRef} visible={false}>
         <TechNodeCluster
           skills={assignment.category.skills}
@@ -560,18 +737,100 @@ function SkillScene({
         ref={controlsRef}
         enablePan={false}
         enableZoom={false}
+        enableRotate={!reducedMotion}
         enableDamping
         dampingFactor={0.05}
+        mouseButtons={{ LEFT: THREE.MOUSE.ROTATE }}
         autoRotate={!focusedId && !reducedMotion}
         autoRotateSpeed={0.4}
       />
 
-      <BloomBoundary>
-        <EffectComposer>
-          <Bloom intensity={1.4} luminanceThreshold={0.2} luminanceSmoothing={0.12} />
-        </EffectComposer>
-      </BloomBoundary>
     </>
+  );
+}
+
+function StaticSkillMatrix({ colors }: { colors: SkillColorMap }) {
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        inset: 'clamp(96px, 14vh, 132px) clamp(24px, 7vw, 112px) 112px',
+        display: 'grid',
+        placeItems: 'center',
+        pointerEvents: 'none',
+      }}
+    >
+      <div
+        style={{
+          position: 'relative',
+          width: 'min(76vw, 620px)',
+          aspectRatio: '1 / 1',
+        }}
+      >
+        {[0, 1, 2, 3].map((ring) => (
+          <div
+            key={ring}
+            style={{
+              position: 'absolute',
+              inset: `${8 + ring * 9}%`,
+              border: `1px dashed ${ring % 2 === 0 ? colors.cyanDim : colors.borderDim}`,
+              borderRadius: '50%',
+              transform: `rotate(${ring * 18 - 14}deg) scaleY(${0.72 + ring * 0.04})`,
+              opacity: 0.65,
+              boxShadow: `0 0 ${8 + ring * 2}px ${colors.cyanGhost}`,
+            }}
+          />
+        ))}
+
+        <div
+          style={{
+            position: 'absolute',
+            left: '50%',
+            top: '50%',
+            width: 70,
+            height: 70,
+            marginLeft: -35,
+            marginTop: -35,
+            borderRadius: '50%',
+            background: colors.cyanPure,
+            boxShadow: `0 0 18px ${colors.cyanPure}, 0 0 56px ${colors.cyanGhost}`,
+          }}
+        />
+
+        {SKILLS.map((skill, index) => {
+          const angle = -Math.PI / 2 + (index / SKILLS.length) * Math.PI * 2;
+          const radius = index === 4 ? 24 : 38;
+          const x = 50 + Math.cos(angle) * radius;
+          const y = 50 + Math.sin(angle) * radius * 0.72;
+          const color = colors[skill.colorToken] || colors.cyanPure;
+
+          return (
+            <div
+              key={skill.id}
+              style={{
+                position: 'absolute',
+                left: `${x}%`,
+                top: `${y}%`,
+                transform: 'translate(-50%, -50%)',
+                minWidth: 118,
+                padding: '8px 10px',
+                border: `1px solid ${color}`,
+                background: 'rgba(13, 21, 32, 0.86)',
+                color: colors.textPrimary,
+                fontFamily: 'var(--font-mono)',
+                fontSize: 10,
+                letterSpacing: '0.1em',
+                textAlign: 'center',
+                textTransform: 'uppercase',
+                boxShadow: `0 0 16px ${colors.cyanGhost}`,
+              }}
+            >
+              {skill.label}
+            </div>
+          );
+        })}
+      </div>
+    </div>
   );
 }
 
@@ -579,6 +838,8 @@ export function SkillOrrery({ className, style }: SkillOrreryProps) {
   const progressRef = useRef<HTMLDivElement>(null);
   const colors = useSkillColors();
   const reducedMotion = usePrefersReducedMotion();
+  const staticFallback = useStaticOrreryFallback();
+  const shouldUseStaticFallback = reducedMotion || staticFallback;
 
   useEffect(() => {
     if (!progressRef.current) return;
@@ -604,7 +865,7 @@ export function SkillOrrery({ className, style }: SkillOrreryProps) {
       className={className}
       style={{
         position: 'relative',
-        minHeight: '100vh',
+        height: '100vh',
         background: 'var(--bg-void)',
         borderTop: '1px solid var(--border-dim)',
         borderBottom: '1px solid var(--border-dim)',
@@ -660,17 +921,41 @@ export function SkillOrrery({ className, style }: SkillOrreryProps) {
         </div>
       </div>
 
-      <WebGLErrorBoundary>
-        <Canvas
-          aria-hidden="true"
-          camera={{ position: [0, 1.1, 7.2], fov: 46, near: 0.1, far: 100 }}
-          dpr={[1, 2]}
-          gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
-          style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: 'calc(100% - 80px)' }}
-        >
-          <SkillScene colors={colors} reducedMotion={reducedMotion} />
-        </Canvas>
-      </WebGLErrorBoundary>
+      {shouldUseStaticFallback ? (
+        <StaticSkillMatrix colors={colors} />
+      ) : (
+        <WebGLErrorBoundary>
+          <div
+            data-cursor="lock"
+            style={{
+              position: 'absolute',
+              top: 'clamp(104px, 15vh, 138px)',
+              left: 'clamp(32px, 8vw, 132px)',
+              right: 'clamp(32px, 8vw, 132px)',
+              bottom: 112,
+              minHeight: 360,
+              background: '#05080F',
+              border: '1px solid var(--border-dim)',
+              boxShadow: 'inset 0 0 34px rgba(0, 212, 255, 0.08), 0 0 28px rgba(0, 212, 255, 0.08)',
+              overflow: 'hidden',
+              overscrollBehavior: 'auto',
+              touchAction: 'auto',
+            }}
+          >
+            <Canvas
+              aria-hidden="true"
+              camera={{ position: [0, 1.1, 7.2], fov: 46, near: 0.1, far: 100 }}
+              dpr={[1, 2]}
+              frameloop="always"
+              gl={{ antialias: true, alpha: false, powerPreference: 'high-performance' }}
+              onCreated={({ gl }) => { gl.setClearColor(0x05080f, 1); }}
+              style={{ width: '100%', height: '100%' }}
+            >
+              <SkillScene colors={colors} reducedMotion={reducedMotion} />
+            </Canvas>
+          </div>
+        </WebGLErrorBoundary>
+      )}
 
       {/* Scroll zone — non-canvas strip so the user can scroll past the OrbitControls canvas */}
       <div

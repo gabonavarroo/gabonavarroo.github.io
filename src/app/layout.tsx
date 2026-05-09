@@ -38,7 +38,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       className={`${orbitron.variable} ${jetbrainsMono.variable}`}
       style={{ colorScheme: 'dark' }}
     >
-      <body>
+      <body suppressHydrationWarning>
         <AudioControllerShell>
           <ClientShell />
           {children}

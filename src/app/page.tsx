@@ -30,9 +30,80 @@ const ParticleRunner = dynamic(
   { ssr: false }
 );
 
+function SkillOrreryLoading() {
+  return (
+    <section
+      data-section="skills"
+      style={{
+        position: 'relative',
+        height: '100vh',
+        background: 'var(--bg-void)',
+        borderTop: '1px solid var(--border-dim)',
+        borderBottom: '1px solid var(--border-dim)',
+        overflow: 'hidden',
+      }}
+    >
+      <div
+        aria-hidden
+        style={{
+          position: 'absolute',
+          inset: 0,
+          background:
+            'radial-gradient(circle at 50% 45%, var(--cyan-ghost), transparent 34%), linear-gradient(180deg, rgba(5, 8, 15, 0.2), var(--bg-void))',
+          pointerEvents: 'none',
+        }}
+      />
+      <div
+        style={{
+          position: 'absolute',
+          top: 32,
+          left: 32,
+          zIndex: 2,
+          width: 'min(360px, calc(100vw - 64px))',
+        }}
+      >
+        <p className="hud-label" style={{ color: 'var(--cyan-pure)', margin: '0 0 10px' }}>
+          SKILL MATRIX LOADING
+        </p>
+        <div style={{ height: 2, width: '100%', background: 'var(--border-dim)', overflow: 'hidden' }}>
+          <div
+            style={{
+              width: '42%',
+              height: '100%',
+              background: 'var(--cyan-pure)',
+              boxShadow: '0 0 12px var(--cyan-glow)',
+            }}
+          />
+        </div>
+      </div>
+      <div
+        aria-hidden
+        style={{
+          position: 'absolute',
+          inset: 'clamp(104px, 15vh, 138px) clamp(32px, 8vw, 132px) 112px',
+          border: '1px solid var(--border-dim)',
+          display: 'grid',
+          placeItems: 'center',
+          pointerEvents: 'none',
+        }}
+      >
+        <div
+          style={{
+            width: 82,
+            height: 82,
+            borderRadius: '50%',
+            background: 'var(--cyan-pure)',
+            boxShadow: '0 0 22px var(--cyan-pure), 0 0 70px var(--cyan-ghost)',
+          }}
+        />
+      </div>
+    </section>
+  );
+}
+
 const SkillOrrery = dynamic(
   () => import('@/components/skills/SkillOrrery').then((m) => m.SkillOrrery),
-  { ssr: false }
+  { ssr: false, loading: () => <SkillOrreryLoading /> }
 );
 
 const ProjectGallery = dynamic(
