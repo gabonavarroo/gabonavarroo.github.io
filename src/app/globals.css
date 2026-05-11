@@ -120,6 +120,52 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* ── Skip-to-main link (screen readers) ─────────── */
+.skip-to-main {
+  position: absolute;
+  left: -9999px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+.skip-to-main:focus {
+  left: 16px;
+  top: 16px;
+  width: auto;
+  height: auto;
+  overflow: visible;
+  z-index: 9999;
+  background: var(--bg-surface);
+  color: var(--cyan-pure);
+  border: 1px solid var(--cyan-pure);
+  padding: 8px 16px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+}
+
+/* ── Global focus-visible ring ───────────────────── */
+:focus-visible {
+  outline: 1px solid var(--cyan-pure);
+  outline-offset: 2px;
+}
+
+/* Suppress outline for mouse-initiated focus */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* ── Reduced-motion: disable GSAP scrub animations ─ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 /* ── Typography utilities ────────────────────── */
 .font-variant-tabular {
   font-variant-numeric: tabular-nums;
@@ -355,5 +401,29 @@ body {
   .about-grid {
     grid-template-columns: 1fr !important;
     gap: 32px !important;
+  }
+}
+
+/* ── Phase 5: blink-cursor keyframe ──────────────── */
+@keyframes blink-cursor {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* ── Mission Log responsive ──────────────────────── */
+@media (max-width: 768px) {
+  .mission-log-grid {
+    grid-template-columns: 1fr !important;
+    gap: 24px 0 !important;
+  }
+  .mission-entry-card {
+    grid-column: 1 !important;
+  }
+}
+
+/* ── System Monitor responsive ───────────────────── */
+@media (max-width: 640px) {
+  .tech-stack-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
   }
 }

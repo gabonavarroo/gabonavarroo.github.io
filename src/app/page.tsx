@@ -3,6 +3,9 @@
 import dynamic from 'next/dynamic';
 import { useState, useEffect, useRef } from 'react';
 import { AboutPanel } from '@/components/about/AboutPanel';
+import { MissionLog } from '@/components/experience/MissionLog';
+import { SystemMonitor } from '@/components/labs/SystemMonitor';
+import { TransmissionPanel } from '@/components/contact/TransmissionPanel';
 
 // All R3F / browser-only components must be ssr:false in static export.
 const AtomLoader = dynamic(
@@ -130,7 +133,7 @@ export default function Home() {
   }, []);
 
   return (
-    <main data-section="root" className="relative z-10 min-h-screen">
+    <main id="main-content" data-section="root" className="relative z-10 min-h-screen">
       {/* Atom loader — fixed full-screen overlay, z-100. Unmounted after completion. */}
       {!loaderDone && (
         <AtomLoader onComplete={() => setLoaderDone(true)} />
@@ -169,6 +172,15 @@ export default function Home() {
 
       {/* ── PROJECTS / MISSION ARCHIVE ──────────────────────── */}
       <ProjectGallery />
+
+      {/* ── EXPERIENCE / MISSION LOG ────────────────────────── */}
+      <MissionLog />
+
+      {/* ── LABS / SYSTEM MONITOR ───────────────────────────── */}
+      <SystemMonitor />
+
+      {/* ── CONTACT / TRANSMISSION TERMINAL ─────────────────── */}
+      <TransmissionPanel />
     </main>
   );
 }

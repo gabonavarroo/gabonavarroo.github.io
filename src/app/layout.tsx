@@ -39,6 +39,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       style={{ colorScheme: 'dark' }}
     >
       <body suppressHydrationWarning>
+        <a href="#main-content" className="skip-to-main">
+          Skip to main content
+        </a>
         <AudioControllerShell>
           <ClientShell />
           {children}

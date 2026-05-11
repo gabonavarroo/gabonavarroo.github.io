@@ -43,7 +43,7 @@ export function ProjectCard({ project, index, total, isMobile }: ProjectCardProp
       data-project-id={project.id}
     >
       {/* ── Scene / Poster ────────────────────────── */}
-      <div className="project-scene">
+      <div className="project-scene" aria-hidden="true">
         {shouldMountScene && SceneComponent ? (
           <Suspense fallback={<SceneSkeleton label="LOADING SCENE..." />}>
             <SceneComponent inView={isInView} />
