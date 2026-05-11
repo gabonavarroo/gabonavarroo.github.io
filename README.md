@@ -15,8 +15,6 @@
 | Phase 5 — Experience, Labs, Contact | ✅ Complete |
 | Phase 6 — Polish & Deploy | ✅ Complete |
 
-Live data features (GitHub stats, Mexico City weather, contact form) require repo secrets configured in GitHub Actions — see Deploy section below.
-
 ## Stack
 
 Next.js 15 (static export, App Router) · React Three Fiber + drei · GSAP 3.13+ (ScrollTrigger + SplitText) · Tailwind CSS v4 (CSS-first `@theme`) · Lenis smooth scroll · Web Audio API · Custom GLSL shaders · EmailJS · GitHub GraphQL + OpenWeatherMap.
